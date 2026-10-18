@@ -1,7 +1,7 @@
-"""Copy the field runs into labeled_data/ with descriptive names.
+"""Copy the field runs into named_data/ with descriptive names.
 
 The originals in magnetic_field_data/ are never modified, and
-labeled_data/metadata.csv maps every labeled file back to its original.
+named_data/metadata.csv maps every labeled file back to its original.
 
 Layout (folders and names sort in this order):
   large-dike/
@@ -31,7 +31,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO / "magnetic_field_data"
-OUT_DIR = REPO / "labeled_data"
+OUT_DIR = REPO / "named_data"
 
 # ---- Small dike (11:09:51 to 12:02:52) ----
 # Position -> runs 1, 2, 3

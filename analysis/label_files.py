@@ -3,6 +3,9 @@
 The originals in magnetic_field_data/ are never modified, and
 named_data/metadata.csv maps every labeled file back to its original.
 
+Each name ends with the original recording time, e.g.
+large-dike-position-01-run-1_12-36-58.csv.
+
 Layout (folders and names sort in this order):
   large-dike/
     1_positions-01-to-20/      large-dike-position-01-run-1 ... position-20-run-3
@@ -124,7 +127,7 @@ def build_rows():
     def add(dike, folder, name, ts, experiment, position=10, run="",
             height_cm="", scan_time_s=""):
         rows.append({
-            "labeled_file": f"{dike}/{folder}/{dike}-{name}.csv",
+            "labeled_file": f"{dike}/{folder}/{dike}-{name}_{ts}.csv",
             "original_file": original(ts).name,
             "dike": dike,
             "experiment": experiment,

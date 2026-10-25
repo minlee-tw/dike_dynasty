@@ -6,6 +6,10 @@ named_data/metadata.csv maps every labeled file back to its original.
 Each name ends with the original recording time, e.g.
 large-dike-position-01-run-1_12-36-58.csv.
 
+Each copy gets a distance_cm column right after time. Every run covered
+the same 90 cm at a constant speed, so time maps linearly onto distance:
+distance_cm = 90 * (t - t_first) / (t_last - t_first).
+
 Layout (folders and names sort in this order):
   large-dike/
     1_positions-01-to-20/      large-dike-position-01-run-1 ... position-20-run-3
@@ -35,6 +39,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 DATA_DIR = REPO / "magnetic_field_data"
 OUT_DIR = REPO / "named_data"
+RUN_LENGTH_CM = 90
 
 # ---- Small dike (11:09:51 to 12:02:52) ----
 # Position -> runs 1, 2, 3
@@ -166,6 +171,23 @@ def build_rows():
     return rows
 
 
+def copy_with_distance(src, dest):
+    """Copy a run, inserting distance_cm (0 to RUN_LENGTH_CM) after time."""
+    lines = src.read_text().splitlines()
+    comments = [ln for ln in lines if ln.startswith("#")]
+    header, *data = [ln for ln in lines if ln and not ln.startswith("#")]
+    rows = [ln.split(",") for ln in data]
+    t = [float(r[0]) for r in rows]
+    span = t[-1] - t[0]
+
+    cols = header.split(",")
+    out = comments + [",".join([cols[0], "distance_cm", *cols[1:]])]
+    for r, ti in zip(rows, t):
+        d = RUN_LENGTH_CM * (ti - t[0]) / span
+        out.append(",".join([r[0], f"{d:.2f}", *r[1:]]))
+    dest.write_text("\n".join(out) + "\n")
+
+
 def main():
     rows = build_rows()
 
@@ -185,7 +207,7 @@ def main():
     for r in rows:
         dest = OUT_DIR / r["labeled_file"]
         dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(DATA_DIR / r["original_file"], dest)
+        copy_with_distance(DATA_DIR / r["original_file"], dest)
 
     with open(OUT_DIR / "metadata.csv", "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0]))

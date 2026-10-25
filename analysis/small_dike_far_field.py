@@ -227,7 +227,7 @@ def main():
     out = FIG_DIR / "small-dike_far_field_cutoffs.csv"
     with open(out, "w", newline="") as fh:
         w = csv.writer(fh)
-        w.writerow(["position", "run", "verdict", "dike_found", "far_left_below_cm",
+        w.writerow(["position", "run", "verdict", "match_cm", "dike_found", "far_left_below_cm",
                     "far_right_above_cm", "left_from_match_cm", "right_from_match_cm",
                     "far_left_mean_uT", "far_left_sd_uT", "far_left_length_cm",
                     "far_right_mean_uT", "far_right_sd_uT", "far_right_length_cm",
@@ -235,7 +235,7 @@ def main():
         for r in runs:
             if r["cut"]:
                 a, b = r["cut"]
-                cut = [f"{a + r['match_cm']:.1f}", f"{b + r['match_cm']:.1f}", f"{a:.1f}", f"{b:.1f}"]
+                cut = [f"{a + r['match_cm']:.2f}", f"{b + r['match_cm']:.2f}", f"{a:.2f}", f"{b:.2f}"]
             else:
                 cut = ["", "", "", ""]
             sides = []
@@ -243,8 +243,8 @@ def main():
                 s = r["sides"][side]
                 sides += [f"{s[0]:.3f}", f"{s[1]:.3f}", f"{s[2]:.1f}"] if s else ["", "", ""]
             far = [f"{v:.3f}" for v in r["far"][:3]] + [f"{r['far'][3]:.1f}"]
-            w.writerow([r["pos"], r["run"], r["v"], "yes" if r["cut"] else "no"] + cut + sides
-                       + far)
+            w.writerow([r["pos"], r["run"], r["v"], f"{r['match_cm']:.2f}",
+                        "yes" if r["cut"] else "no"] + cut + sides + far)
     print(f"Saved {out.relative_to(REPO)}")
 
     fig, ax = plt.subplots(figsize=(13, 14), layout="constrained")

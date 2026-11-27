@@ -1,0 +1,8 @@
+quantity,value,unit,note
+far_field_bz_mean,-42.147,uT,mean of the far-field values of the 52 kept runs
+far_field_bz_se,0.228,uT,standard error of that mean
+far_field_bz_sd_across_runs,1.642,uT,
+far_field_bz_median,-42.190,uT,
+runs_kept,52,,"outside 1 SD of all 60 runs excluded, one pass"
+dikes_confirmed,47,,
+slope_noise_sigma,0.0760,uT/cm,"robust SD of the 6 cm LOESS slope >= 30 cm from the template centre, all runs"
